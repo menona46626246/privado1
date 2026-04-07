@@ -138,29 +138,35 @@ async def handle_incoming_message(
 
         if herramienta_solicitada:
             if herramienta_solicitada["name"] == "consultar_adeudos":
-                placa = herramienta_solicitada["args"].get("placa", "N/A").upper().replace(" ", "").replace("-", "")
+                placa_raw = herramienta_solicitada["args"].get("placa", "").strip().upper()
+                
+                # Validación estricta: si no hay placa real, cancelamos
+                if not placa_raw or len(placa_raw) < 3 or "PROPORCIONA" in placa_raw or placa_raw == "N/A":
+                    texto_llm = "Claro, puedo ayudarte con eso. Solo indícame tu número de placa para realizar la consulta de multas."
+                else:
+                    placa = placa_raw.replace(" ", "").replace("-", "")
 
-                # Feedback si tarda
-                mensaje_carga = f"⚙️ *Consultando servidores de finanzas para la placa {placa}. Un momento...*"
-                await response_func(mensaje_carga)
+                    # Feedback si tarda
+                    mensaje_carga = f"⚙️ *Consultando servidores de finanzas para la placa {placa}. Un momento...*"
+                    await response_func(mensaje_carga)
 
-                # Guardar en Garage si no existe
-                vehiculo_existente = session.exec(select(Vehicle).where(Vehicle.user_id == user_id, Vehicle.placa == placa)).first()
-                if not vehiculo_existente and placa != "N/A":
-                    nuevo_vehiculo = Vehicle(user_id=user_id, placa=placa)
-                    session.add(nuevo_vehiculo)
-                    session.commit()
+                    # Guardar en Garage si no existe
+                    vehiculo_existente = session.exec(select(Vehicle).where(Vehicle.user_id == user_id, Vehicle.placa == placa)).first()
+                    if not vehiculo_existente:
+                        nuevo_vehiculo = Vehicle(user_id=user_id, placa=placa)
+                        session.add(nuevo_vehiculo)
+                        session.commit()
 
-                # Ejecutar Scraping
-                resultados_scraper = await consultar_adeudos_mock(
-                    estado=user.default_state or "CDMX", placa=placa
-                )
+                    # Ejecutar Scraping
+                    resultados_scraper = await consultar_adeudos_mock(
+                        estado=user.default_state or "CDMX", placa=placa
+                    )
 
+                    # Redactar resumen
+                    texto_llm = await generate_final_response_after_tool(
+                        tool_result=resultados_scraper
+                    )
 
-                # Redactar resumen
-                texto_llm = await generate_final_response_after_tool(
-                    tool_result=resultados_scraper
-                )
 
             elif herramienta_solicitada["name"] == "generar_checklist":
                 from pdf_service import generate_pdf_checklist
