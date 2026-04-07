@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     
     discord_token: str = ""
     discord_public_key: str = ""
+    discord_webhook_url: str = ""
     
     sql_debug: bool = False
     llm_model: str = "llama-3.3-70b-versatile"

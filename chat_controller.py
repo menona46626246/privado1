@@ -13,6 +13,7 @@ from llm_service import (
 from models import Interaction, User
 from rag_service import get_rag_context
 from scraper_service import consultar_adeudos_mock
+from alerts_service import notify_critical_error
 
 logger = logging.getLogger(__name__)
 
@@ -130,7 +131,8 @@ async def handle_incoming_message(
             )
         except Exception as e:
             logger.error("Error generando respuesta del agente: %s", e, exc_info=True)
-            texto_llm = "Lo lamento, mis servidores están intermitentes."
+            notify_critical_error(f"Falla crítica en LLM para usuario {platform_id}: {str(e)}")
+            texto_llm = "Lo lamento, mis servidores están intermitentes. Intenta en unos minutos."
             herramienta_solicitada = None
 
         # --- BUCLE DEL AGENTE (EJECUCIÓN DE HERRAMIENTAS) ---
