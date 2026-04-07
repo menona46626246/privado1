@@ -62,6 +62,26 @@ TOOLS: list[ChatCompletionToolParam] = [
                 "required": ["titulo", "requisitos"],
             },
         },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "buscar_modulos",
+            "description": (
+                "Obtiene las ubicaciones oficiales (dirección y Google Maps) de oficinas "
+                "de trámites vehiculares, licencias y recaudación en un estado."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "estado": {
+                        "type": "string",
+                        "description": "El estado de México (CDMX, Chihuahua, Nuevo Leon, Jalisco).",
+                    }
+                },
+                "required": [],
+            },
+        },
     }
 ]
 
@@ -84,7 +104,7 @@ async def generate_agent_response(
         "   - Llama a `consultar_adeudos` SÓLO si el usuario indicó explícitamente pagar o consultar deudas, y tienes la placa. Y no la llames si ya la llamaste en este turno.\n"
         "   - PROHIBICIÓN: Si no tienes la placa, NO INVENTES una (ej. 'NOPROPORCIONADA'). Simplemente pide la placa al usuario en tu respuesta de texto.\n"
         "   - Llama a `generar_checklist` SÓLO y EXCLUSIVAMENTE cuando el usuario pide explícitamente una lista para imprimir, descargar, un PDF o una guía paso a paso para el módulo.\n"
-
+        "   - Llama a `buscar_modulos` SI el usuario pregunta dónde ir, pide la dirección del módulo, horarios o cómo llegar a pagar/tramitar.\n"
         "2. Si el usuario envía una imagen, analízala con cuidado, extrae placas, folios de multa o detalles y actua conforme al trámite que pida.\n"
         "3. Si faltan datos (ej. el estado o la placa para una multa), pídeselos antes de usar herramientas.\n"
         "4. Tus respuestas deben ser MUY concisas y formateadas en Markdown."

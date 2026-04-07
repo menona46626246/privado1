@@ -180,6 +180,27 @@ async def handle_incoming_message(
                 filepath_to_send = generate_pdf_checklist(titulo, requisitos)
                 texto_llm = "¡Aquí tienes tu checklist lista para imprimir! Llévala contigo a tu cita. ¿En qué más te ayudo?"
 
+            elif herramienta_solicitada["name"] == "buscar_modulos":
+                from maps_service import get_modulos_por_estado
+                estado_consultar = herramienta_solicitada["args"].get("estado") or user.default_state or "CDMX"
+                modulos = get_modulos_por_estado(estado_consultar)
+                
+                if modulos:
+                    lista_modulos = "\n\n".join([
+                        f"📍 **{m['nombre']}**\n🏠 {m['direccion']}\n🔗 [Ver en Google Maps]({m['maps_url']})" 
+                        for m in modulos
+                    ])
+                    texto_llm = (
+                        f"¡Claro! Aquí tienes los módulos de atención más cercanos en **{estado_consultar.upper()}**:\n\n"
+                        f"{lista_modulos}\n\n"
+                        "Te recomendamos llegar 15 minutos antes de tu cita. ¿Necesitas algo más?"
+                    )
+                else:
+                    texto_llm = (
+                        f"Por el momento no tengo el mapa detallado de módulos para **{estado_consultar}**, "
+                        "pero puedes consultarlos en el portal oficial de finanzas de tu estado. ¿Deseas que busque otra cosa?"
+                    )
+
         # Envío y Persistencia final
         if texto_llm:
             await response_func(texto_llm, filepath=filepath_to_send)
