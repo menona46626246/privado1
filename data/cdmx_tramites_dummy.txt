@@ -1,0 +1,83 @@
+TRAMITE: Alta de Placas de Vehículo Nuevo (CDMX)
+ESTADO: CDMX
+COSTO: $893.00 MXN para automóviles particulares.
+REQUISITOS: 
+1. Identificación oficial vigente con fotografía (INE, Pasaporte, Cédula Profesional).
+2. Comprobante de domicilio de la Ciudad de México no mayor a 3 meses.
+3. Comprobante de propiedad del vehículo (Factura de origen o carta factura).
+4. Comprobante de pago de derechos (línea de captura pagada).
+PASOS:
+Agendar cita en los Módulos de Control Vehicular de la SEMOVI, presentar documentos originales y copias, realizar el pago y recoger las placas, engomado y tarjeta de circulación.
+
+---
+
+TRAMITE: Renovación de Tarjeta de Circulación (CDMX)
+ESTADO: CDMX
+COSTO: $398.00 MXN.
+REQUISITOS:
+1. Tarjeta de circulación vencida o constancia de pérdida/robo.
+2. Identificación oficial vigente.
+3. Pago de derechos.
+4. No tener adeudos de tenencia o multas vehiculares asociadas a las placas.
+PASOS:
+Puede realizarse en línea a través de Llave CDMX o presencialmente con cita.
+
+---
+
+TRAMITE: Multas de Tránsito (CDMX)
+ESTADO: CDMX
+INFORMACIÓN: Las multas fotocívicas no generan un costo económico inmediato pero restan puntos a la placa. Si se pierden puntos, el propietario no podrá verificar su vehículo hasta cumplir con los cursos en línea o trabajo comunitario. Las multas económicas (infracciones directas por policías de tránsito) sí deben pagarse para poder realizar la verificación vehicular.
+DESCUENTOS: Si se paga una multa económica dentro de los primeros 10 días, puede haber hasta un 90% de descuento sobre la sanción.
+
+---
+
+TRAMITE: Expedición, Renovación o Reposición de Licencia de Conducir Tipo A (CDMX)
+ESTADO: CDMX
+COSTO: $1,049.00 MXN.
+REQUISITOS:
+1. Identificación oficial vigente con fotografía.
+2. Comprobante de domicilio de la CDMX.
+3. Línea de captura pagada.
+PASOS:
+1. Generar cita en los Módulos de Control Vehicular.
+2. Acudir con los documentos y comprobante de pago.
+3. Si es renovación digital, se puede usar App CDMX.
+
+---
+
+TRAMITE: Verificación Vehicular (CDMX)
+ESTADO: CDMX
+COSTO: $708.00 MXN.
+REQUISITOS:
+1. Tarjeta de circulación.
+2. Constancia de verificación anterior o certificado de pago de multa por verificación extemporánea.
+3. El vehículo no debe tener multas ni adeudos de tenencia.
+PASOS:
+Se debe verificar el calendario de acuerdo al engomado y terminación de placas (ej. engomado amarillo terminación 5 y 6 verifica enero y febrero). Agendar cita por internet.
+
+---
+
+TRAMITE: Pago de Tenencia y Refrendo Vehicular (CDMX)
+ESTADO: CDMX
+COSTO: Refrendo $698.00 MXN.
+INFORMACIÓN: Si se paga el refrendo antes del 31 de marzo, y el vehículo no excede $250,000 MXN de valor factura, se obtiene el 100% de subsidio en el impuesto de la Tenencia. Es requisito indispensable no tener adeudos de años anteriores y contar con la Tarjeta de Circulación con chip vigente o hacer el pago para su renovación.
+
+---
+
+TRAMITE: Descuentos y Subsidios para Alta de Placas y Tenencia (CDMX 2026)
+ESTADO: CDMX
+INFORMACIÓN: Para el año fiscal 2026, el Gobierno de la CDMX ofrece descuentos especiales para el trámite de Alta de Placas y Tenencia:
+1. Vehículos Híbridos y Eléctricos: Tienen un 50% de descuento en el trámite de alta de placas y están exentos del 100% del pago de Tenencia y Verificación Vehicular (Engomado Exento).
+2. Flotillas Comerciales Pyme: 20% de descuento en el alta de placas si se registran 3 o más vehículos simultáneamente en 2026.
+3. El pago de placas tradicionales NO tiene descuento general por pronto pago, el costo es fijo de $893.00 MXN y se debe cubrir íntegramente.
+
+---
+
+TRAMITE: Licencia de Conducir Permanente (CDMX)
+ESTADO: CDMX
+COSTO: $1,500.00 MXN.
+REQUISITOS: 
+1. Estar registrado en el Padrón de Automovilistas de la CDMX (tener cuenta Llave CDMX).
+2. Identificación oficial vigente.
+3. No tener antecedentes de pérdida de puntos o retiro de licencia por conducir en estado de ebriedad (Alcoholímetro).
+PASOS: Es un programa especial reintroducido. Se debe generar la línea de captura especial para "Licencia Permanente" y acudir a los Macro Módulos habilitados por SEMOVI.

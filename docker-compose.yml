@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  discord-bot:
+    build: .
+    container_name: autotramite-discord
+    restart: unless-stopped
+    command: ["python", "-u", "discord_bot.py"]
+    volumes:
+      - ./data:/app/data
+      - ./chroma_db:/app/chroma_db
+      - ./autotramite.db:/app/autotramite.db
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  whatsapp-webhook:
+    build: .
+    container_name: autotramite-whatsapp
+    restart: unless-stopped
+    command: ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      - "80:8000"
+    volumes:
+      - ./data:/app/data
+      - ./chroma_db:/app/chroma_db
+      - ./autotramite.db:/app/autotramite.db
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1

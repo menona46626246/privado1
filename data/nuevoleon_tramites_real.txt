@@ -1,0 +1,16 @@
+TRAMITE: Alta de Placas de Vehículo Nuevo y Regularización
+ESTADO: Nuevo León
+CIUDADES APLICABLES: Monterrey, San Pedro, Apodaca, Guadalupe y área metropolitana.
+COSTO OFICIAL: Depende si es vehículo nuevo o usado. El estado suele ofrecer programas como "Ponlo a tu Nombre" con una cuota fija (alrededor de $5,865 MXN) para modelos antiguos. 
+REQUISITOS:
+1. Identificación oficial vigente (INE).
+2. Licencia de conducir vigente del Estado de Nuevo León (Requisito Obligatorio).
+3. Factura original, CFDI o carta factura.
+4. (Si aplica) Documento de registro vehicular anterior endosado.
+PASOS:
+Realizar un pre-registro en línea a través de icvnl.gob.mx y agendar cita, o acudir físicamente a los módulos del Instituto de Control Vehicular (ICV).
+---
+TRAMITE: Refrendo Vehicular (Tenencia) y Multas
+ESTADO: Nuevo León
+REGLAS: En Nuevo León se paga el Refrendo Vehicular anualmente. Si existen multas pendientes (estacionamiento, radar de velocidad, tránsito), estas impedirán la generación de la tarjeta de circulación actualizada.
+DÓNDE PAGAR: Directamente en el portal del Instituto de Control Vehicular (icvnl.gob.mx) usando la placa y los últimos 5 dígitos del Número de Serie (NIV) o en sucursales bancarias asociadas.
