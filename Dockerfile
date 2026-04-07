@@ -8,9 +8,9 @@ ENV PYTHONUNBUFFERED 1
 # Configuramos el directorio de trabajo del contenedor
 WORKDIR /app
 
-# Instalamos dependencias básicas del sistema
+# Instalamos dependencias básicas del sistema (sin Playwright/Chromium para ahorrar espacio)
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc libpq-dev wget \
+    && apt-get install -y --no-install-recommends gcc libpq-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -21,8 +21,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Instalamos explícitamente los navegadores de Playwright del sistema junto con sus dependencias OS
-RUN python -m playwright install --with-deps chromium
+# NOTA: Playwright/Chromium se omiten para ahorrar ~500MB en disco.
+# El scraper_service tiene un fallback seguro cuando Playwright no está disponible.
 
 # Copiamos el resto del código del bot dentro de la imagen
 COPY . .
