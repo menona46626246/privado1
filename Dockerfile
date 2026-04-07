@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
 # Instalamos explícitamente los navegadores de Playwright del sistema junto con sus dependencias OS
-RUN playwright install --with-deps chromium
+RUN python -m playwright install --with-deps chromium
 
 # Copiamos el resto del código del bot dentro de la imagen
 COPY . .
