@@ -7,3 +7,5 @@ pydantic>=2.6.4
 tenacity>=8.2.3
 twilio>=9.0.0
 discord.py>=2.3.2
+playwright>=1.42.0
+fpdf2>=2.7.8
