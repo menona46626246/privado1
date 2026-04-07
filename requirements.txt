@@ -8,5 +8,5 @@ pydantic-settings>=2.2.0
 tenacity>=8.2.3
 twilio>=9.0.0
 discord.py>=2.3.2
-# playwright>=1.42.0  # Opcional: instalar localmente si necesitas scraping real
+playwright>=1.42.0
 fpdf2>=2.7.8

@@ -1,35 +1,44 @@
-# Usamos una imagen oficial de Python 3.12 slim como base
-FROM python:3.12-slim
+# --- ETAPA 1: BUILDER ---
+FROM python:3.12-slim as builder
 
-# Evita que Python escriba archivos .pyc en el disco y fuerza que el stdout y stderr no usen bufer
+WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Configuramos el directorio de trabajo del contenedor
-WORKDIR /app
-
-# Instalamos dependencias básicas del sistema (sin Playwright/Chromium para ahorrar espacio)
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc libpq-dev \
-    && apt-get clean \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copiamos primero el archivo de requerimientos para aprovechar el caché de Docker
 COPY requirements.txt .
+# Generamos wheels para no tener que compilar nada en la imagen final
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
 
-# Instalamos las dependencias del proyecto (incluye playwright)
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
 
-# NOTA: Playwright/Chromium se omiten para ahorrar ~500MB en disco.
-# El scraper_service tiene un fallback seguro cuando Playwright no está disponible.
+# --- ETAPA 2: FINAL ---
+FROM python:3.12-slim
 
-# Copiamos el resto del código del bot dentro de la imagen
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Instalamos solo las dependencias mínimas para que Chromium corra
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalamos las librerías desde las wheels generadas
+COPY --from=builder /app/wheels /wheels
+COPY --from=builder /app/requirements.txt .
+RUN pip install --no-cache /wheels/*
+
+# Instalamos los navegadores de Playwright (solo Chromium) y sus dependencias de sistema
+# Luego borramos toda la caché de apt que deje este paso
+RUN python -m playwright install --with-deps chromium \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /root/.cache/pip
+
 COPY . .
 
-# Exponemos el puerto 8000 para la API (FastAPI webhook para WhatsApp)
 EXPOSE 8000
-
-# Creamos un pequeño script de inicio (entrypoint) que corra el discord_bot y main webhook si es necesario
-# Por defecto lanzaremos el backend de FastAPI con Uvicorn (WhatsApp webhooks)
 CMD ["python", "discord_bot.py"]
