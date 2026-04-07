@@ -44,7 +44,7 @@ MODULOS_UBICACIONES: Dict[str, List[Dict[str, str]]] = {
 
 def get_modulos_por_estado(estado: str) -> Optional[List[Dict[str, str]]]:
     """Retorna la lista de módulos para el estado proporcionado."""
-    estado_upper = estado.upper().strip()
+    estado_upper = estado.upper().strip().replace("_", " ")
     # Limpieza básica de nombres de estado
     if "CIUDAD DE MEXICO" in estado_upper or "CDMX" in estado_upper:
         return MODULOS_UBICACIONES.get("CDMX")

@@ -103,8 +103,8 @@ async def on_message(message: discord.Message):
             if len(text) > 4000:
                 # Si excede el límite del embed, fallback a mensajes normales
                 chunks = [text[i:i + 1950] for i in range(0, len(text), 1950)]
-                for chunk in chunks:
-                    await message.channel.send(chunk, file=file if file else None)
+                for idx, chunk in enumerate(chunks):
+                    await message.channel.send(chunk, file=file if (file and idx == 0) else None)
             else:
                 await message.channel.send(embed=embed, view=view, file=file)
 

@@ -26,7 +26,11 @@ def ingest_dummy_data():
     
     files_to_index = [
         {"path": "data/cdmx_tramites_dummy.txt", "estado": Estado.CDMX.value},
-        {"path": "data/chihuahua_tramites_dummy.txt", "estado": Estado.CHIHUAHUA.value}
+        {"path": "data/cdmx_tramites_real.txt", "estado": Estado.CDMX.value},
+        {"path": "data/chihuahua_tramites_dummy.txt", "estado": Estado.CHIHUAHUA.value},
+        {"path": "data/chihuahua_tramites_real.txt", "estado": Estado.CHIHUAHUA.value},
+        {"path": "data/jalisco_tramites_real.txt", "estado": Estado.JALISCO.value},
+        {"path": "data/nuevoleon_tramites_real.txt", "estado": Estado.NUEVO_LEON.value},
     ]
     
     documents = []

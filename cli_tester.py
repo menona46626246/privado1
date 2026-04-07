@@ -31,9 +31,11 @@ async def main():
                 print("Cerrando simulador...")
                 break
 
-            async def reply_func(reply_text: str):
+            async def reply_func(reply_text: str, filepath: str | None = None):
                 # En el CLI simplemente imprimimos
                 print(f"🤖 Bot: {reply_text}")
+                if filepath:
+                    print(f"📎 Archivo generado: {filepath}")
 
             # Pasamos el mensaje al cerebro como si hubiera llegado por Twilio
             await handle_incoming_message(
