@@ -93,3 +93,29 @@ async def consultar_adeudos_mock(estado: str, placa: str) -> dict:
         "deuda_total_mxn": total,
         "link_pago_oficial": f"https://data.finanzas.cdmx.gob.mx/sma/Consultaciudadana?placa={placa}" if total > 0 else None
     }
+
+
+async def leer_contenido_web_dinamico(url: str) -> str:
+    """
+    Nacega a una URL arbitraria y extrae el texto amigable para que el Agente lo analice.
+    Útil para 'leer' nuevos requisitos o leyes en vivo.
+    """
+    if not PLAYWRIGHT_AVAILABLE:
+        return "Playwright no está disponible para lectura dinámica."
+
+    logger.info("[AgentScraper] Leyendo página dinámicamente: %s", url)
+    try:
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            page = await browser.new_page()
+            await page.goto(url, wait_until="networkidle", timeout=30000)
+            
+            # Extraer solo el texto visible y relevante
+            content = await page.evaluate("() => document.body.innerText")
+            await browser.close()
+            
+            # Limpiar un poco el contenido (primeros 5000 caracteres)
+            return content[:5000]
+    except Exception as e:
+        logger.error("[AgentScraper] Error leyendo %s: %s", url, e)
+        return f"No se pudo leer la página: {str(e)}"

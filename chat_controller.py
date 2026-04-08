@@ -203,6 +203,32 @@ async def handle_incoming_message(
                         "pero puedes consultarlos en el portal oficial de finanzas de tu estado. ¿Deseas que busque otra cosa?"
                     )
 
+            elif herramienta_solicitada["name"] == "investigar_en_web":
+                from search_service import search_web_latest
+                query_investigacion = herramienta_solicitada["args"].get("query")
+                
+                await response_func(f"🔍 *Estoy investigando en portales oficiales sobre: '{query_investigacion}'...*")
+                
+                resultados_web = await search_web_latest(query_investigacion)
+                
+                # Devolver los resultados a la IA para que los resuma de forma natural
+                texto_llm = await generate_final_response_after_tool(
+                    tool_result={"informacion_investigada": resultados_web}
+                )
+
+            elif herramienta_solicitada["name"] == "leer_pagina_web":
+                from scraper_service import leer_contenido_web_dinamico
+                url_a_leer = herramienta_solicitada["args"].get("url")
+                
+                await response_func(f"📖 *Analizando el contenido oficial en: {url_a_leer}...*")
+                
+                contenido_pagina = await leer_contenido_web_dinamico(url_a_leer)
+                
+                # Devolver el contenido a la IA para su análisis
+                texto_llm = await generate_final_response_after_tool(
+                    tool_result={"contenido_leido_de_la_web": contenido_pagina}
+                )
+
         # Envío y Persistencia final
         if texto_llm:
             await response_func(texto_llm, filepath=filepath_to_send)

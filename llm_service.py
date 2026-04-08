@@ -83,6 +83,47 @@ TOOLS: list[ChatCompletionToolParam] = [
                 "required": [],
             },
         },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "investigar_en_web",
+            "description": (
+                "USA ESTA HERRAMIENTA si el usuario pregunta algo sobre trámites, leyes, "
+                "costos actuales o noticias de gobierno que NO estén en tu conocimiento oficial. "
+                "Te permite buscar en Google/Internet en tiempo real."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "La búsqueda específica (Ej: 'costo refrendo CDMX 2026').",
+                    }
+                },
+                "required": ["query"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "leer_pagina_web",
+            "description": (
+                "USA ESTA HERRAMIENTA si tienes una URL específica de un portal de gobierno "
+                "o noticia y necesitas leer su contenido completo para dar una respuesta precisa."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "description": "La URL completa de la página a leer.",
+                    }
+                },
+                "required": ["url"],
+            },
+        },
     }
 ]
 
@@ -109,7 +150,9 @@ async def generate_agent_response(
         "1. NO uses herramientas de inmediato si el usuario solo está saludando.\n"
         "2. Llama a `consultar_adeudos` solo si el usuario quiere saber sus deudas.\n"
         "3. Llama a `generar_checklist` o `buscar_modulos` cuando haya un trámite en curso.\n"
-        "4. Formatea con Markdown y emojis para que el chat se vea profesional pero cercano."
+        "4. Llama a `investigar_en_web` SI el usuario te pregunta por algo que no conoces, como "
+        "costos específicos de 2026, nuevas leyes o noticias de gobierno locales.\n"
+        "5. Formatea con Markdown y emojis para que el chat se vea profesional pero cercano."
     )
 
     messages: list[ChatCompletionMessageParam] = [
