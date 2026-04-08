@@ -44,7 +44,7 @@ Este proyecto ha evolucionado de un simple chatbot a una arquitectura de **Agent
 2. Comandos:
    ```bash
    git pull
-   sudo docker-compose up -d --build
+   sudo docker compose up -d --build
    ```
 
 ---
