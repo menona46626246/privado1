@@ -21,8 +21,8 @@ collection = chroma_client.get_or_create_collection(
 )
 
 
-def ingest_dummy_data():
-    """Lee documentos dummy, los divide en chunks y los indexa en Chroma"""
+def actualizar_chroma_db():
+    """Lee documentos, los divide en chunks y los indexa en Chroma"""
     
     files_to_index = [
         {"path": "data/cdmx_tramites_dummy.txt", "estado": Estado.CDMX.value},
@@ -74,12 +74,12 @@ def ingest_dummy_data():
                 "tipo_tramite": tramite_type
             })
 
-    # Indexar en la colección
+    # Indexar en la colección (usamos upsert para poder correrlo varias veces)
     if documents:
-        collection.add(documents=documents, metadatas=metadatas, ids=ids)
+        collection.upsert(documents=documents, metadatas=metadatas, ids=ids)
         logger.info("Indexados %d fragmentos en la BD Vectorial", len(documents))
 
 
 if __name__ == "__main__":
-    ingest_dummy_data()
+    actualizar_chroma_db()
 

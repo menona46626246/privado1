@@ -1,5 +1,7 @@
 import logging
-from fastapi import FastAPI, Form, BackgroundTasks
+import os
+from fastapi import FastAPI, Form, BackgroundTasks, Request
+from fastapi.staticfiles import StaticFiles
 from twilio.twiml.messaging_response import MessagingResponse
 from chat_controller import handle_incoming_message
 from scheduler import start_scheduler
@@ -11,6 +13,8 @@ app = FastAPI(title="AutoTrámite webhooks")
 
 @app.on_event("startup")
 async def on_startup():
+    os.makedirs("output", exist_ok=True)
+    app.mount("/archivos", StaticFiles(directory="output"), name="archivos")
     start_scheduler()
 
 # Diccionario temporal para guardar la "vista" de respuesta y poder responder a un HTTP asíncronamente
@@ -43,6 +47,7 @@ async def send_whatsapp_async(to_number: str, text: str, media_url: str | None =
 
 @app.post("/webhook/whatsapp")
 async def twilio_whatsapp_webhook(
+    request: Request,
     background_tasks: BackgroundTasks,
     From: str = Form(...),
     Body: str = Form(default=""),
@@ -55,12 +60,12 @@ async def twilio_whatsapp_webhook(
     image_urls = [MediaUrl0] if MediaUrl0 else None
     
     async def whatsapp_reply(text: str, filepath: str | None = None):
-        # A diferencia de Discord, Twilio requiere URLs públicas para adjuntos, 
-        # así que enviar el archivo local PDF directamente por Twilio no funcionará sin S3.
-        # Por ahora lo mandaremos como texto, o enviaremos enlaces mock.
+        media_url = None
         if filepath:
-            text += "\n\n📄 [El documento PDF se generó, pero en WhatsApp requieres un servidor público para enviarlo]. Usa Discord para bajarlo directamente."
-        await send_whatsapp_async(user_phone, text)
+            filename = os.path.basename(filepath)
+            media_url = f"{str(request.base_url).rstrip('/')}/archivos/{filename}"
+            text += f"\n\n📄 Tu documento está listo: {media_url}"
+        await send_whatsapp_async(user_phone, text, media_url=media_url)
 
     # background task para no trabar el webhook
     background_tasks.add_task(
@@ -74,3 +79,9 @@ async def twilio_whatsapp_webhook(
     
     # Twilio espera un HTTP 200 rápido
     return str(MessagingResponse())
+
+@app.post("/admin/actualizar-leyes")
+async def admin_actualizar_leyes(background_tasks: BackgroundTasks):
+    from seed_rag import actualizar_chroma_db
+    background_tasks.add_task(actualizar_chroma_db)
+    return {"status": "Actualización de BD Vectorial iniciada en segundo plano."}

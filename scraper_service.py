@@ -25,51 +25,58 @@ async def consultar_adeudos_mock(estado: str, placa: str) -> dict:
 
     if PLAYWRIGHT_AVAILABLE:
         logger.info("[Scraper] Iniciando consulta REAL con Playwright para placa: %s", placa)
-        try:
-            async with async_playwright() as p:
-                browser = await p.chromium.launch(headless=True)
-                page = await browser.new_page()
-                
-                if "CDMX" in estado:
-                    url = "https://data.finanzas.cdmx.gob.mx/sma/Consultaciudadana"
-                    logger.info("[Scraper] Navegando a CDMX: %s", url)
-                    await page.goto(url, wait_until="networkidle")
+        for attempt in range(3):
+            try:
+                async with async_playwright() as p:
+                    browser = await p.chromium.launch(headless=True)
+                    page = await browser.new_page()
+                    page.set_default_timeout(20000)
                     
-                    # Llenar placa
-                    await page.fill("#inputPlaca", placa)
+                    if "CDMX" in estado:
+                        url = "https://data.finanzas.cdmx.gob.mx/sma/Consultaciudadana"
+                        logger.info("[Scraper] Navegando a CDMX: %s", url)
+                        await page.goto(url, wait_until="networkidle")
+                        
+                        # Llenar placa
+                        await page.fill("#inputPlaca", placa)
+                        
+                        # Detectar Captcha
+                        captcha_present = await page.query_selector("#captcha_code")
+                        if captcha_present:
+                            logger.warning("[Scraper] CAPTCHA DETECTADO en CDMX. Requiere intervención humana.")
+                            await browser.close()
+                            return {
+                                "origen": "Portal CDMX (Protegido)",
+                                "placa": placa,
+                                "error": "El portal de la CDMX requiere resolver un Captcha visual.",
+                                "link_pago_oficial": url,
+                                "adeudos_encontrados": [],
+                                "deuda_total_mxn": 0.0
+                            }
+                        
+                        # Click Buscar
+                        await page.click(".btn-cdmx")
+                        await page.wait_for_timeout(2000)
+                        origen = "Portal Oficial CDMX"
                     
-                    # Detectar Captcha
-                    captcha_present = await page.query_selector("#captcha_code")
-                    if captcha_present:
-                        logger.warning("[Scraper] CAPTCHA DETECTADO en CDMX. Requiere intervención humana.")
-                        await browser.close()
-                        return {
-                            "origen": "Portal CDMX (Protegido)",
-                            "placa": placa,
-                            "error": "El portal de la CDMX requiere resolver un Captcha visual.",
-                            "link_pago_oficial": url,
-                            "adeudos_encontrados": [],
-                            "deuda_total_mxn": 0.0
-                        }
+                    elif "NUEVO LEON" in estado or "MONTERREY" in estado:
+                        url = "https://www.icvnl.gob.mx/estadodecuenta"
+                        await page.goto(url)
+                        origen = "Portal Oficial NL"
                     
-                    # Click Buscar
-                    await page.click(".btn-cdmx")
-                    await page.wait_for_timeout(2000)
-                    origen = "Portal Oficial CDMX"
-                
-                elif "NUEVO LEON" in estado or "MONTERREY" in estado:
-                    url = "https://www.icvnl.gob.mx/estadodecuenta"
-                    await page.goto(url)
-                    origen = "Portal Oficial NL"
-                
+                    else:
+                        # Otros estados aún en simulación
+                        await asyncio.sleep(1)
+                    
+                    await browser.close()
+                    break # Éxito, salir del loop
+            except Exception as e:
+                logger.error("[Scraper] Error real en Playwright, intento %d/3: %s", attempt + 1, e)
+                if attempt < 2:
+                    await asyncio.sleep(2 ** attempt)
                 else:
-                    # Otros estados aún en simulación
-                    await asyncio.sleep(1)
-                
-                await browser.close()
-        except Exception as e:
-            logger.error("[Scraper] Error real en Playwright: %s", e)
-            # Fallback silencioso si falla el scraping real
+                    # Fallback silencioso si falla el scraping real 3 veces
+                    pass
     
     # Fallback / Simulación
     if not adeudos and "error" not in locals():
