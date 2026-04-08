@@ -85,18 +85,18 @@ async def handle_incoming_message(
 
             if estado_detectado:
                 user.default_state = estado_detectado.value
-                respuesta_estado = ESTADO_CONFIRMACIONES[estado_detectado]
                 session.add(user)
                 session.commit()
-            else:
-                respuesta_estado = (
-                    "⚠️ Por ahora solo tengo cobertura oficial en: *CDMX*, *Chihuahua*, "
-                    "*Nuevo León* y *Jalisco*. Por favor, indica tu estado para darte el marco legal exacto."
-                )
-
-            await response_func(respuesta_estado)
-            _save_interaction(session, user_id, text, respuesta_estado, "set_state")
-            return
+                # NOTA: NO HACEMOS RETURN. Continuamos al Agente para que salude humanamente.
+            elif not any(k in texto_limpio for k in ["hola", "buen", "hey", "tal"]):
+                 # Solo pedir el estado si el mensaje NO es un saludo genérico
+                 respuesta_estado = (
+                    "⚠️ Me encantaría ayudarte, pero necesito saber en qué estado de México vives (CDMX, Edomex, Nuevo León, Jalisco o Chihuahua) "
+                    "para darte información legal exacta."
+                 )
+                 await response_func(respuesta_estado)
+                 _save_interaction(session, user_id, text, respuesta_estado, "set_state")
+                 return
 
         # 3. Flujo Principal RAG y Agente
         historial: list[Interaction] = list(
