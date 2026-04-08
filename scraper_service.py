@@ -19,7 +19,7 @@ async def consultar_adeudos_mock(estado: str, placa: str) -> dict:
     placa = placa.upper().replace("-", "").replace(" ", "")
     estado = estado.upper()
     
-    adeudos = []
+    adeudos: list = []
     total = 0.0
     origen = "Simulación Local"
 

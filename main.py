@@ -28,7 +28,8 @@ async def send_whatsapp_async(to_number: str, text: str, media_url: str | None =
         return
         
     try:
-        kwargs = {
+        from typing import Any
+        kwargs: dict[str, Any] = {
             "from_": settings.twilio_whatsapp_number,
             "body": text[:1600],
             "to": to_number

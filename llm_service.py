@@ -168,7 +168,7 @@ async def generate_agent_response(
 
     # Mensaje actual (puede ser texto o texto + fotos)
     if image_urls:
-        content_array = [{"type": "text", "text": user_message}]
+        content_array: list[dict] = [{"type": "text", "text": user_message}]
         for url in image_urls:
             content_array.append({
                 "type": "image_url",
