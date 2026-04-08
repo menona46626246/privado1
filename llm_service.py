@@ -68,8 +68,9 @@ TOOLS: list[ChatCompletionToolParam] = [
         "function": {
             "name": "buscar_modulos",
             "description": (
-                "Obtiene las ubicaciones oficiales (dirección y Google Maps) de oficinas "
-                "de trámites vehiculares, licencias y recaudación en un estado."
+                "USA ESTA HERRAMIENTA SOLO si el usuario pregunta explícitamente dónde ir, "
+                "pide la dirección de un módulo, horarios o cómo llegar. "
+                "NO LA USES para saludar ni para dar información general."
             ),
             "parameters": {
                 "type": "object",
