@@ -15,8 +15,8 @@ async def search_web_latest(query: str, max_results: int = 4) -> str:
     search_query = f"{query} México trámites oficiales"
     
     try:
-        async with DDGS() as ddgs:
-            results = await ddgs.text(search_query, max_results=max_results, region="mx-es")
+        with DDGS() as ddgs:
+            results = ddgs.text(search_query, max_results=max_results, region="mx-es")
             
             if not results:
                 return "No se encontraron resultados recientes en la web."
