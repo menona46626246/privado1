@@ -16,7 +16,7 @@ async def send_admin_alert(message: str, severity: str = "ERROR"):
     # Por ahora, si no hay webhook, solo lo dejamos en el log central.
     # Implementación recomendada: Discord Webhook
     
-    webhook_url = getattr(settings, "discord_webhook_url", None)
+    webhook_url = settings.discord_webhook_url or None
     
     if webhook_url:
         payload = {
@@ -34,8 +34,9 @@ async def send_admin_alert(message: str, severity: str = "ERROR"):
 
 def notify_critical_error(error_msg: str):
     """Lanzador síncrono para usar en try/except."""
-    loop = asyncio.get_event_loop()
-    if loop.is_running():
+    try:
+        loop = asyncio.get_running_loop()
         loop.create_task(send_admin_alert(error_msg))
-    else:
+    except RuntimeError:
+        # No hay event loop corriendo, crear uno temporal
         asyncio.run(send_admin_alert(error_msg))

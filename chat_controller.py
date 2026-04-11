@@ -67,7 +67,7 @@ async def handle_incoming_message(
                 "altas de placas y tenencias.\n\n"
                 "Para poder darte requisitos legales precisos, dime: "
                 "**¿En qué Estado habitas?** "
-                "(Ej: *CDMX*, *Monterrey*, *Edomex*)."
+                "(Ej: *CDMX*, *Monterrey*, *Guadalajara*, *Chihuahua*)."
             )
             await response_func(respuesta_bienvenida)
             _save_interaction(session, user_id, text, respuesta_bienvenida, "onboarding")
@@ -87,7 +87,12 @@ async def handle_incoming_message(
                 user.default_state = estado_detectado.value
                 session.add(user)
                 session.commit()
-                # NOTA: NO HACEMOS RETURN. Continuamos al Agente para que salude humanamente.
+                # Enviar confirmación personalizada por estado
+                confirmacion = ESTADO_CONFIRMACIONES.get(estado_detectado)
+                if confirmacion:
+                    await response_func(confirmacion)
+                    _save_interaction(session, user_id, text, confirmacion, "set_state")
+                    return
             elif not any(k in texto_limpio for k in ["hola", "buen", "hey", "tal"]):
                  # Solo pedir el estado si el mensaje NO es un saludo genérico
                  respuesta_estado = (

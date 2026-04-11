@@ -16,6 +16,8 @@ ESTADO_KEYWORDS: dict[str, Estado] = {
     "cdmx": Estado.CDMX,
     "mexico": Estado.CDMX,
     "ciudad de": Estado.CDMX,
+    "edomex": Estado.CDMX,
+    "estado de mexico": Estado.CDMX,
     "chihuahua": Estado.CHIHUAHUA,
     "juarez": Estado.CHIHUAHUA,
     "juárez": Estado.CHIHUAHUA,

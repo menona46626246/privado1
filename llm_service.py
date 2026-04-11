@@ -136,7 +136,7 @@ async def generate_agent_response(
     Función central del Agente. Evalúa el RAG, el contexto y decide si responder
     directamente o invocar una herramienta.
     """
-    system_prompt = (
+    system_prompt_template = (
         "Eres AutoTrámite MX, un asistente inteligente y amigable experto en procesos vehiculares en México. "
         "Tu prioridad es ser útil, pero también humano. SALUDA siempre amablemente y ten una conversación natural ante todo."
         "\n\nREGLAS DE TONO:\n"
@@ -154,6 +154,7 @@ async def generate_agent_response(
         "costos específicos de 2026, nuevas leyes o noticias de gobierno locales.\n"
         "5. Formatea con Markdown y emojis para que el chat se vea profesional pero cercano."
     )
+    system_prompt = system_prompt_template.format(rag_context=rag_context)
 
     messages: list[ChatCompletionMessageParam] = [
         {"role": "system", "content": system_prompt}

@@ -54,7 +54,7 @@ def get_modulos_por_estado(estado: str) -> Optional[List[Dict[str, str]]]:
     """Retorna la lista de módulos para el estado proporcionado con URL de mapa correcta."""
     estado_upper = estado.upper().strip().replace("_", " ")
     # Limpieza básica de nombres de estado
-    if "CIUDAD DE MEXICO" in estado_upper or "CDMX" in estado_upper:
+    if "CIUDAD DE MEXICO" in estado_upper or "CDMX" in estado_upper or "EDOMEX" in estado_upper:
         return _procesar_modulos(MODULOS_UBICACIONES.get("CDMX"))
     if "CHIHUAHUA" in estado_upper or "JUAREZ" in estado_upper:
         return _procesar_modulos(MODULOS_UBICACIONES.get("CHIHUAHUA"))

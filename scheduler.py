@@ -23,7 +23,7 @@ async def send_reminder_task():
     with Session(engine) as session:
         # Buscamos recordatorios para hoy o pasado que no se hayan enviado
         hoy = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        statement = select(Reminder).where(Reminder.fecha_aviso <= hoy, Reminder.enviado == False)
+        statement = select(Reminder).where(Reminder.fecha_aviso <= hoy, Reminder.enviado.is_(False))
         pendientes = session.exec(statement).all()
         
         for reminder in pendientes:

@@ -22,6 +22,7 @@ async def consultar_adeudos_mock(estado: str, placa: str) -> dict:
     adeudos: list = []
     total = 0.0
     origen = "Simulación Local"
+    captcha_detected = False
 
     if PLAYWRIGHT_AVAILABLE:
         logger.info("[Scraper] Iniciando consulta REAL con Playwright para placa: %s", placa)
@@ -44,6 +45,7 @@ async def consultar_adeudos_mock(estado: str, placa: str) -> dict:
                         captcha_present = await page.query_selector("#captcha_code")
                         if captcha_present:
                             logger.warning("[Scraper] CAPTCHA DETECTADO en CDMX. Requiere intervención humana.")
+                            captcha_detected = True
                             await browser.close()
                             return {
                                 "origen": "Portal CDMX (Protegido)",
@@ -79,7 +81,7 @@ async def consultar_adeudos_mock(estado: str, placa: str) -> dict:
                     pass
     
     # Fallback / Simulación
-    if not adeudos and "error" not in locals():
+    if not adeudos and not captcha_detected:
         logger.info("[Scraper] Regresando datos de simulación para %s", placa)
         if not placa.startswith("A"):
             adeudos = [

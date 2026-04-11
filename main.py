@@ -1,5 +1,7 @@
+import asyncio
 import logging
 import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Form, BackgroundTasks, Request
 from fastapi.staticfiles import StaticFiles
 from twilio.twiml.messaging_response import MessagingResponse
@@ -9,13 +11,14 @@ from scheduler import start_scheduler
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="AutoTrámite webhooks")
-
-@app.on_event("startup")
-async def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     os.makedirs("output", exist_ok=True)
     app.mount("/archivos", StaticFiles(directory="output"), name="archivos")
     start_scheduler()
+    yield
+
+app = FastAPI(title="AutoTrámite webhooks", lifespan=lifespan)
 
 # Diccionario temporal para guardar la "vista" de respuesta y poder responder a un HTTP asíncronamente
 # Sin embargo, en Twilio Webhooks si respondemos tarde (>15s) falla.
@@ -41,7 +44,8 @@ async def send_whatsapp_async(to_number: str, text: str, media_url: str | None =
         if media_url:
             kwargs["media_url"] = [media_url]
             
-        twilio_client.messages.create(**kwargs)
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, lambda: twilio_client.messages.create(**kwargs))
     except Exception as e:
         logger.error("Error enviando WhatsApp via Twilio: %s", e)
 
