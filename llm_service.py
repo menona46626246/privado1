@@ -208,22 +208,33 @@ async def generate_agent_response(
         return "Lo lamento, mis servidores están intermitentes. Intenta en 5 minutos.", None
 
 
-async def generate_final_response_after_tool(tool_result: dict) -> str:
-    """Envía los datos json crudos del scraper y genera lenguaje natural para el usuario."""
-    system_prompt = (
-        "Eres AutoTramite MX. El sistema acaba de consultar las multas del usuario "
-        "en la base de datos gubernamental y obtuvo este JSON. Transfórmalo a un "
-        "mensaje amable y amigable nativo para WhatsApp (bullet points, emojis, "
-        "monto total de adeudo si hay). "
-        "SI EL JSON CONTIENE 'link_pago_oficial', incluye AL FINAL DE TU MENSAJE ese link hipervinculado pidiendo al usuario que puede pagarlo ahí directamente."
-    )
+async def generate_final_response_after_tool(tool_result: dict, tool_name: str = "consultar_adeudos") -> str:
+    """Envía los datos crudos de una herramienta y genera lenguaje natural para el usuario."""
+    
+    if tool_name == "consultar_adeudos":
+        system_prompt = (
+            "Eres AutoTramite MX. El sistema acaba de consultar las multas del usuario "
+            "en la base de datos gubernamental y obtuvo este JSON. Transfórmalo a un "
+            "mensaje amable y amigable nativo para WhatsApp (bullet points, emojis, "
+            "monto total de adeudo si hay). "
+            "SI EL JSON CONTIENE 'link_pago_oficial', incluye AL FINAL DE TU MENSAJE ese link hipervinculado pidiendo al usuario que puede pagarlo ahí directamente."
+        )
+    elif tool_name == "investigar_en_web" or tool_name == "leer_pagina_web":
+        system_prompt = (
+            "Eres AutoTramite MX. El sistema acaba de obtener la siguiente información "
+            "de una búsqueda en la web o extrayendo texto de un sitio web. Transfórmalo a un "
+            "mensaje claro, amable y útil (bullet points, emojis) que responda "
+            "la inquietud del usuario. No inventes multas ni adeudos, solo explica la info recibida."
+        )
+    else:
+        system_prompt = "Eres AutoTramite MX. Transforma el siguiente JSON en una respuesta amigable para el usuario."
 
     messages: list[ChatCompletionMessageParam] = [
         {"role": "system", "content": system_prompt},
         {
             "role": "user",
             "content": (
-                f"El scraper arrojó estos resultados: {json.dumps(tool_result)}"
+                f"Resultado de la herramienta '{tool_name}': {json.dumps(tool_result, ensure_ascii=False)}"
             ),
         },
     ]
@@ -238,7 +249,4 @@ async def generate_final_response_after_tool(tool_result: dict) -> str:
         return content if content else "Lo siento, no pude procesar la respuesta."
     except Exception as e:
         logger.error("Error formateando resultado de herramienta: %s", e)
-        return (
-            f"Tus resultados llegaron pero no pude formatearlos bien. "
-            f"El adeudo crudo es de: {tool_result.get('deuda_total_mxn')} MXN."
-        )
+        return "Tus resultados llegaron pero no pude formatearlos bien. Hubo un error de formato."

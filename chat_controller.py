@@ -171,7 +171,8 @@ async def handle_incoming_message(
 
                     # Redactar resumen
                     texto_llm = await generate_final_response_after_tool(
-                        tool_result=resultados_scraper
+                        tool_result=resultados_scraper,
+                        tool_name="consultar_adeudos"
                     )
 
 
@@ -218,7 +219,8 @@ async def handle_incoming_message(
                 
                 # Devolver los resultados a la IA para que los resuma de forma natural
                 texto_llm = await generate_final_response_after_tool(
-                    tool_result={"informacion_investigada": resultados_web}
+                    tool_result={"informacion_investigada": resultados_web},
+                    tool_name="investigar_en_web"
                 )
 
             elif herramienta_solicitada["name"] == "leer_pagina_web":
@@ -231,7 +233,8 @@ async def handle_incoming_message(
                 
                 # Devolver el contenido a la IA para su análisis
                 texto_llm = await generate_final_response_after_tool(
-                    tool_result={"contenido_leido_de_la_web": contenido_pagina}
+                    tool_result={"contenido_leido_de_la_web": contenido_pagina},
+                    tool_name="leer_pagina_web"
                 )
 
         # Envío y Persistencia final
