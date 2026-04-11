@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Form, BackgroundTasks, Request
 from fastapi.staticfiles import StaticFiles
 from twilio.twiml.messaging_response import MessagingResponse
+from database import create_db_and_tables, engine
 from chat_controller import handle_incoming_message
 from scheduler import start_scheduler
 
@@ -14,6 +15,7 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     os.makedirs("output", exist_ok=True)
+    create_db_and_tables()
     app.mount("/archivos", StaticFiles(directory="output"), name="archivos")
     start_scheduler()
     yield
